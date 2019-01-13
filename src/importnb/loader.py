@@ -137,9 +137,12 @@ class ImportLibMixin(SourceFileLoader):
 
     def get_data(self, path):
         """Needs to return the string source for the module."""
+        str = self.decode()
+        if self._cache:
+            self.nb = str
         return LineCacheNotebookDecoder(
             code=self.code, raw=self.raw, markdown=self.markdown
-        ).decode(self.decode(), self.path)
+        ).decode(str, self.path)
 
     @classmethod
     @_requires_builtin
@@ -170,13 +173,15 @@ class NotebookBaseLoader(ImportLibMixin, FinderContextManager):
         lazy=False,
         fuzzy=True,
         position=0,
-        markdown_docstring=True
+        markdown_docstring=True,
+        cache=False
     ):
         super().__init__(fullname, path)
         self._lazy = lazy
         self._fuzzy = fuzzy
         self._markdown_docstring = markdown_docstring
         self._position = position
+        self._cache = cache
 
     @property
     def loader(self):
@@ -258,7 +263,7 @@ class TransformerMixin:
 """
 
 
-class Notebook(TransformerMixin, FromFileMixin, NotebookBaseLoader):
+class NotebookLoader(TransformerMixin, FromFileMixin, NotebookBaseLoader):
     """Notebook is a user friendly file finder and module loader for notebook source code.
     
     > Remember, restart and run all or it didn't happen.
@@ -302,6 +307,8 @@ class Notebook(TransformerMixin, FromFileMixin, NotebookBaseLoader):
             ast.fix_missing_locations(self.visit(nodes)), path, _optimize=_optimize
         )
 
+
+Notebook = NotebookLoader
 
 """# Developer
 """
