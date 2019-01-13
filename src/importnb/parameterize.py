@@ -92,9 +92,12 @@ class Parameterize(Notebook):
         position=0,
         globals=None,
         main=False,
+        cache=False,
         **_globals
     ):
-        super().__init__(fullname, path, lazy=lazy, fuzzy=fuzzy, position=position, main=main)
+        super().__init__(
+            fullname, path, lazy=lazy, fuzzy=fuzzy, position=position, main=main, cache=cache
+        )
         self.globals = globals or {}
         self.globals.update(**_globals)
         self._visitor = FindReplace(self.globals, argparse.ArgumentParser(prog=self.name))

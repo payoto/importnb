@@ -284,6 +284,7 @@ class NotebookLoader(TransformerMixin, FromFileMixin, NotebookBaseLoader):
         fuzzy=True,
         markdown_docstring=True,
         main=False,
+        cache=False,
     ):
         self._main = bool(main) or fullname == "__main__"
         super().__init__(
@@ -293,6 +294,7 @@ class NotebookLoader(TransformerMixin, FromFileMixin, NotebookBaseLoader):
             fuzzy=fuzzy,
             position=position,
             markdown_docstring=markdown_docstring,
+            cache=cache,
         )
 
     def source_to_code(self, nodes, path, *, _optimize=-1):
